@@ -1,0 +1,45 @@
+---
+import {
+  Client,
+  collectDataSourceTemplates,
+  type QueryDataSourceResponse,
+} from "@notionhq/client";
+
+const notion = new Client({ auth: import.meta.env.NOTION_SECRET_KEY });
+
+// const response = await notion.databases.retrieve({
+//     database_id: import.meta.env.NOTION_DB_ID,
+// });
+const response = await notion.dataSources.retrieve({
+  data_source_id: import.meta.env.NOTION_DATASOURCE_ID,
+});
+
+const queryDS: QueryDataSourceResponse = await notion.dataSources.query({
+  data_source_id: import.meta.env.NOTION_DATASOURCE_ID,
+  filter_properties: ["Tarea", "Estado"],
+});
+
+// console.log(response);
+// console.log(templates);
+// console.log(queryDS.results);
+
+for (const page of queryDS.results) {
+  // You can use type guards like isFullPage to work with specific types
+  // if (isFullPage(page)) { ... }
+  // console.log("Page title:", (page as any).properties["Tarea"]);
+  console.log(
+    "Plain Text:",
+    (page as any).properties["Tarea"].title[0].plain_text
+  );
+}
+---
+
+<div>
+  <ul>
+    {
+      queryDS.results?.map((page) => (
+        <li>{(page as any).properties["Tarea"].title[0].plain_text}</li>
+      ))
+    }
+  </ul>
+</div>
