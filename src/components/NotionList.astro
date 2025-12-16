@@ -7,39 +7,40 @@ import {
 
 const notion = new Client({ auth: import.meta.env.NOTION_SECRET_KEY });
 
-// const response = await notion.databases.retrieve({
-//     database_id: import.meta.env.NOTION_DB_ID,
+// const response = await notion.dataSources.retrieve({
+//   data_source_id: import.meta.env.NOTION_DATASOURCE_ID,
 // });
-const response = await notion.dataSources.retrieve({
-  data_source_id: import.meta.env.NOTION_DATASOURCE_ID,
-});
 
 const queryDS: QueryDataSourceResponse = await notion.dataSources.query({
   data_source_id: import.meta.env.NOTION_DATASOURCE_ID,
-  filter_properties: ["Tarea", "Estado"],
+  filter_properties: ["Tarea", "Estado", "Descripcion"],
 });
 
-// console.log(response);
-// console.log(templates);
-// console.log(queryDS.results);
-
-for (const page of queryDS.results) {
-  // You can use type guards like isFullPage to work with specific types
-  // if (isFullPage(page)) { ... }
-  // console.log("Page title:", (page as any).properties["Tarea"]);
-  console.log(
-    "Plain Text:",
-    (page as any).properties["Tarea"].title[0].plain_text
-  );
-}
+// for (const page of queryDS.results) {
+//   // You can use type guards like isFullPage to work with specific types
+//   console.log("Plain Text:", (page as any).properties["Estado"]);
+// }
 ---
 
-<div>
-  <ul>
+<table class="table-fixed w-full">
+  <thead>
+    <tr class="font-bold">
+      <th>Tarea</th>
+      <th>Estado</th>
+      <th>Descripción</th>
+    </tr>
+  </thead>
+  <tbody>
     {
       queryDS.results?.map((page) => (
-        <li>{(page as any).properties["Tarea"].title[0].plain_text}</li>
+        <tr>
+          <td>{(page as any).properties["Tarea"].title[0].plain_text}</td>
+          <td>{(page as any).properties["Estado"].status.name}</td>
+          <td>
+            {(page as any).properties["Descripcion"]?.rich_text[0].plain_text}
+          </td>
+        </tr>
       ))
     }
-  </ul>
-</div>
+  </tbody>
+</table>
