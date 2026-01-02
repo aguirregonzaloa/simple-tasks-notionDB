@@ -11,6 +11,6 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
-  output: "static",
+  output: "server",
   adapter: netlify(),
 });

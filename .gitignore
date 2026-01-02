@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # rest client files
 *.http
+
+# Local Netlify folder
+.netlify
